@@ -1,0 +1,9 @@
+services:
+  app:
+    container_name: discord-doi-bot
+    image: ulysseszhan/discord-doi-bot:latest
+    # build: .
+    environment:
+      DISCORD_DOI_BOT_TOKEN: YoUr.ToKeN.hErE
+      DISCORD_DOI_BOT_CROSSREF_MAILTO: kat@example.com
+    restart: unless-stopped
