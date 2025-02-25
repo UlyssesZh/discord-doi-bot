@@ -38,24 +38,23 @@ def embed_from_doi id
 end
 
 def doi_from_message content
-	[
-		%r{https?://doi\.org/(?<id>\S+)}i,
-		%r{doi:(?<id>\S+)}i,
-	].each do |regex|
-		if match = regex.match(content)
-			return match[:id].gsub %r{^/+|/+$}, ''
-		end
-	end
-	nil
+	content.scan(%r{https?://doi\.org/(\S+)|doi:(\S+)}i).map do |match|
+		match.compact.first.gsub %r{^/+|/+$}, ''
+	end.uniq
 end
 
 bot.message do |event|
-	next unless id = doi_from_message(event.content)
-	if embed = embed_from_doi(id)
-		event.message.reply! '', embed:
-	else
-		event.message.reply! "No metadata found for doi:#{id}"
+	embed = doi_from_message(event.content).map { embed_from_doi _1 }.compact
+	next if embed.empty?
+	components = Discordrb::Webhooks::View.new
+	components.row do |row|
+		row.button style: :secondary, emoji: {name: '❌'}, custom_id: 'delete'
 	end
+	event.message.reply! '', embed:, components:
+end
+
+bot.button custom_id: 'delete' do |event|
+	event.message.message.delete
 end
 
 bot.run
