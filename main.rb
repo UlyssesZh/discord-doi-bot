@@ -48,12 +48,14 @@ bot.message do |event|
 	next if embed.empty?
 	components = Discordrb::Webhooks::View.new
 	components.row do |row|
-		row.button style: :secondary, emoji: {name: '❌'}, custom_id: 'delete'
+		row.button style: :secondary, emoji: {name: '❌'}, custom_id: "delete_#{event.user.id}"
 	end
 	event.message.reply! '', embed:, components:
 end
 
-bot.button custom_id: 'delete' do |event|
+bot.button do |event|
+	next unless user_id = event.custom_id[/^delete_(\d+)$/, 1]
+	next unless event.user.id == user_id.to_i
 	event.message.message.delete
 end
 
