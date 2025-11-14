@@ -4,4 +4,4 @@ COPY . .
 
 RUN bundle install
 
-ENTRYPOINT [ "/app/main.rb" ]
+ENTRYPOINT [ "bundle", "exec", "./main.rb" ]
