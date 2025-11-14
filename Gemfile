@@ -1,4 +1,4 @@
 source "https://rubygems.org"
 
 gem 'serrano'
-gem 'discordrb'
+gem 'discordrb', github: 'UlyssesZh/discordrb', branch: 'timeout'
